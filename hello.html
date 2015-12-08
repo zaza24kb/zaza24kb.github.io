@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="Keywords" content="blog"/>
+    <meta name="Description" content="blog"/>
+    <title>Simple</title>
+    <link rel="shortcut icon" href="/static/favicon.png"/>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+<div class="main">
+    <div class="header">
+    	<ul id="pages">
+            <li><a href="/">home</a></li>
+            <li><a href="/#/tags">tags</a></li>
+            <li><a href="/#/archive">archive</a></li>
+    	</ul>
+    </div>
+	<div class="wrap-header">
+	<h1>
+    <a href="/" id="title"></a>
+	</h1>
+	</div>
+<div id="md" style="display: none;">
+<!-- markdown -->
+# hello world
+
+@[(。・`ω´・)]
+
+几经周折 终于还是建好了我的博客
+
+正如《黑客与画家》里的一句话：如果自己就是潮水的一部分,怎么能看见潮流的方向呢  所以独立的才是自己的
+ 
+建blog过程中我主要参考：[独立写生](https://zh.wikipedia.org/wiki/Markdown)
+
+另外个人建议：我是在狗爹买的域名，后来发现万网的好像更便宜.......DNS解析试了一下之后发现用DNSPod不如用万网，而且可以申请阿里云的企业邮箱玩玩。另外的话评论功能多说和Disqus都不错
+
+
+当然，如果你只想建一个简单的博客不用非定向到自己的域名的话可以参考这个：
+[isnowfy](http://isnowfy.github.io/about-simple-cn.html)
+
+
+
+
+
+
+``` python
+你也可以关注我的微信公众：zaza24kb
+```
+<!-- markdown end -->
+</div>
+<div class="entry" id="main">
+<!-- content -->
+<h1 id="helloworld">hello world</h1>
+
+<p>@[(。・`ω´・)]</p>
+
+<p>几经周折 终于还是建好了我的博客</p>
+
+<p>正如《黑客与画家》里的一句话：如果自己就是潮水的一部分,怎么能看见潮流的方向呢  所以独立的才是自己的</p>
+
+<p>建blog过程中我主要参考：<a href="https://zh.wikipedia.org/wiki/Markdown">独立写生</a></p>
+
+<p>另外个人建议：我是在狗爹买的域名，后来发现万网的好像更便宜.......DNS解析试了一下之后发现用DNSPod不如用万网，而且可以申请阿里云的企业邮箱玩玩。另外的话评论功能多说和Disqus都不错</p>
+
+<p>当然，如果你只想建一个简单的博客不用非定向到自己的域名的话可以参考这个：
+<a href="http://isnowfy.github.io/about-simple-cn.html">isnowfy</a></p>
+
+<pre><code class=" python">你也可以关注我的微信公众：zaza24kb
+</code></pre>
+<!-- content end -->
+</div>
+<br>
+<br>
+    <div id="disqus_thread"></div>
+	<div class="footer">
+		<p>© Copyright 2014 by isnowfy, Designed by isnowfy</p>
+	</div>
+</div>
+<script src="main.js"></script>
+<script id="content" type="text/mustache">
+    <h1>{{title}}</h1>
+    <div class="tag">
+    {{date}}
+    {{#tags}}
+    <a href="/#/tag/{{name}}">#{{name}}</a>
+    {{/tags}}
+    </div>
+</script>
+<script id="pagesTemplate" type="text/mustache">
+    {{#pages}}
+    <li>
+        <a href="{{path}}">{{title}}</a>
+    </li>
+    {{/pages}}
+</script>
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: "main.json",
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+            $("#title").html(data.name);
+            var pagesTemplate = Hogan.compile($("#pagesTemplate").html());
+            var pagesHtml = pagesTemplate.render({"pages": data.pages});
+            $("#pages").append(pagesHtml);
+            //path
+            var path = "hello.html";
+            //path end
+            var now = 0;
+            for (var i = 0; i < data.posts.length; ++i)
+                if (path == data.posts[i].path)
+                    now = i;
+            var post = data.posts[now];
+            var tmp = post.tags.split(" ");
+            var tags = [];
+            for (var i = 0; i < tmp.length; ++i)
+                if (tmp[i].length > 0)
+                    tags.push({"name": tmp[i]});
+            var contentTemplate = Hogan.compile($("#content").html());
+            var contentHtml = contentTemplate.render({"title": post.title, "tags": tags, "date": post.date});
+            $("#main").prepend(contentHtml);
+            if (data.disqus_shortname.length > 0) {
+                var disqus_shortname = data.disqus_shortname;
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            }
+        }
+    });
+});
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ["\\(", "\\)"]], processEscapes: true}});
+</script>
+</body>
+</html>
